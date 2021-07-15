@@ -86,4 +86,27 @@ Remove the SD card and power up the Pi.
 
 ## Configure Ubuntu Server
 
+The Pi starts up booting Ubuntu from the SSD. The first thing to do is some ssh hardening. For this we copy the ssh public key to the Pi:
 
+```bash
+ssh-copy-id -i /location/of/pubkey ubuntu@ipaddress
+```
+
+Check if the public key was correctly installed in the autorized_keys file located in /home/ubuntu/.ssh. Next configure the ssh deamon to only allow connections via public key authentication:
+
+```bash
+sudo nano /etc/ssh/sshd_config
+```
+
+The following variables need to be set:
+PubkeyAuthentication yes
+#PasswordAuthentication yes
+UsePam no
+
+Restart the ssh deamon: `sudo service ssh restart`
+
+Next we need to make sure the DNS server and ip address are appropriately assigned:
+
+```bash
+sudo 
+netplan etc
