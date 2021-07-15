@@ -68,8 +68,22 @@ sudo mount /dev/sda1 /mnt/boot
 sudo mount /dev/sda2 /mnt/writable
 ```
 
-With the `lsblk`-command you can check if the SSD is correctly mounted. The SSD with Ubuntu will be made bootable with the script provided by GitHub-user TheRemote:
+With the `lsblk`-command you can check if the SSD is correctly mounted. The SSD with Ubuntu will be made bootable with the script provided by GitHub-user TheRemote (for availability purposes the script is also hosted on this GitHub repository, all the credits of course go to TheRemote):
 
 ```bash
+sudo apt install git
 sudo curl https://raw.githubusercontent.com/TheRemote/Ubuntu-Server-raspi4-unofficial/master/BootFix.sh | sudo bash
 ```
+
+Now unmount the partitions and shutdown the Pi:
+
+```bash
+sudo umount /mnt/boot
+sudo umount /mnt/writable
+```
+
+Remove the SD card and power up the Pi.
+
+## Configure Ubuntu Server
+
+
