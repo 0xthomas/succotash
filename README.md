@@ -92,7 +92,7 @@ The Pi starts up booting Ubuntu from the SSD. The first thing to do is some ssh 
 ssh-copy-id -i /location/of/pubkey ubuntu@ipaddress
 ```
 
-Check if the public key was correctly installed in the autorized_keys file located in /home/ubuntu/.ssh. Next configure the ssh deamon to only allow connections via public key authentication:
+Check if the public key was correctly installed in the autorized_keys file located in /home/ubuntu/.ssh/. Next configure the ssh deamon to only allow connections via public key authentication:
 
 ```bash
 sudo nano /etc/ssh/sshd_config
@@ -108,5 +108,26 @@ Restart the ssh deamon: `sudo service ssh restart`
 Next we need to make sure the DNS server and ip address are appropriately assigned:
 
 ```bash
-sudo 
-netplan etc
+cat /etc/netplan/<filename>.yaml
+```
+Note down how you can disable cloud-init's network configuration capabilities in order to maintain DNS configurations after reboot.
+
+```bash
+sudo su
+cat > /etc/cloud/cloud.cfg.d/<filename>.cfg
+network: {config: disabled}
+
+sudo nano /etc/netplan/<filename>.yaml
+>network:
+>    ethernets:
+>        eth0:
+>            dhcp4: true
+>            addresses:
+>              - static.ip/24
+>            gateway4: router.ip
+>            nameservers:
+>              addresses: [dns.server.ip]
+>    version: 2
+
+sudo netplan apply
+```
