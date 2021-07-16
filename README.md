@@ -1,6 +1,6 @@
 # Ubuntu Server on Raspberry Pi 4 from SSD
 
-This tutorial explains the steps needed to boot Ubuntu Server from an SSD connected to a Raspberry Pi 4. An SD card is needed during the installation proces, but when finished the SD card can be removed.
+This tutorial explains the steps needed to boot Ubuntu Server 64-bit from an SSD connected to a Raspberry Pi 4. An SD card is needed during the installation proces, but during the process the SD card can be removed.
 
 ## SD card
 First the operating system for Raspberry Pi needs to be downloaded and flashed to an SD card. Go for the latest version of [Raspberry Pi OS Lite](https://www.raspberrypi.org/software/operating-systems/). Additionaly you can sha256sum the file and compare it to the hash on the website:
@@ -23,7 +23,7 @@ touch /path-to-sd-card/boot/ssh
 ```
 
 ## SSD
-The next step is preparing the SSD with Ubuntu Server. The steps are roughly the same but with a different device and a different image. The image is available for download [here](https://ubuntu.com/download/raspberry-pi). It is recommended to go with the 64b-it LTS version. To check the file integrity you can check the hash from the website with the hash from the downloaded file:
+The next step is preparing the SSD with Ubuntu Server 64-bit. The steps are roughly the same but with a different device and a different image. The image is available for download [here](https://ubuntu.com/download/raspberry-pi). It is recommended to go with the 64-bit LTS version. To check the file's integrity you can compare the hash from the website with the hash from the downloaded file:
 
 ```bash
 echo <sha256-hash-to-compare-against> <UbuntuServer.img.xz> | sha256sum -c
@@ -36,7 +36,7 @@ Extract the downloaded file and write the image to the SSD:
 unxz -c <UbuntuServer.img.xz> | dd of=/dev/ssd
 ```
 
-Ubuntu Server has SSH enabled by default which means we don't need to create a file called ssh. Next we can put the SD card in the Pi and make sure the Pi is connected with an ethernet cable. Do not connect the SSD yet as the Pi's default bootorder is first USB, then SD. Power up the Pi.
+Ubuntu Server has SSH enabled by default which means we don't need to create a file called 'ssh'. Next we can put the SD card in the Pi and make sure the Pi is connected with an ethernet cable. Do not connect the SSD yet as the Pi's default bootorder is first USB, then SD. Power up the Pi.
 
 ## Prepare Boot from SSD
 
@@ -59,7 +59,7 @@ If the bootloader wasn't up-to-date then a reboot is required. The next step is 
 lsblk
 ```
 
-The SD card is named something like "mmcblk0". We need to note down the name of the SSD which is the other device listed after the `lsblk`-command. We need to make mountpoints for both partitions and then mount both partitions:
+The SD card is named something like "mmcblk0". We need to note the name of the SSD which is the other device listed after the `lsblk`-command. We need to make mountpoints for both partitions and then mount both partitions:
 
 ```bash
 sudo mkdir /mnt/boot
@@ -86,13 +86,13 @@ Remove the SD card and power up the Pi.
 
 ## Configure Ubuntu Server
 
-The Pi starts up booting Ubuntu from the SSD. The first thing to do is some ssh hardening. For this we copy the ssh public key to the Pi:
+The Pi is now booting Ubuntu from the SSD. The first thing to do is some SSH hardening. For this we copy the SSH public key to the Pi:
 
 ```bash
 ssh-copy-id -i /location/of/pubkey ubuntu@ipaddress
 ```
 
-Check if the public key was correctly installed in the autorized_keys file located in /home/ubuntu/.ssh/. Next configure the ssh deamon to only allow connections via public key authentication:
+Check if the public key was correctly installed in the autorized_keys file located in /home/ubuntu/.ssh/. Next configure the SSH Deamon to only allow connections via public key authentication:
 
 ```bash
 sudo nano /etc/ssh/sshd_config
@@ -103,9 +103,17 @@ PubkeyAuthentication yes
 #PasswordAuthentication yes
 UsePam no
 
-Restart the ssh deamon: `sudo service ssh restart`
+Restart the SSH Deamon: `sudo service ssh restart`
 
-Next we need to make sure the DNS server and ip address are appropriately assigned:
+Configure UFW:
+
+```bash
+sudo ufw allow ssh
+sudo ufw enable
+sudo status ufw verbose
+```
+
+Optionally we can configure the DNS server and IP address:
 
 ```bash
 cat /etc/netplan/<filename>.yaml
@@ -131,3 +139,5 @@ sudo nano /etc/netplan/<filename>.yaml
 
 sudo netplan apply
 ```
+
+That's it!
