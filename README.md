@@ -92,7 +92,7 @@ The Pi is now booting Ubuntu from the SSD. The first thing to do is some SSH har
 ssh-copy-id -i /location/of/pubkey ubuntu@ipaddress
 ```
 
-Check if the public key was correctly installed in the autorized_keys file located in /home/ubuntu/.ssh/. Next configure the SSH Deamon to only allow connections via public key authentication:
+Check if the public key was correctly installed in the autorized_keys file located in /home/ubuntu/.ssh/. Next configure the SSH Daemon to only allow connections via public key authentication:
 
 ```bash
 sudo nano /etc/ssh/sshd_config
